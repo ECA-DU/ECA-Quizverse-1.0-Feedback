@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ECA Quizverse 1.0 - Official Feedback</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Importing a font similar to Lovelo (Geometric Sans Serif) -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -43,7 +42,6 @@
             background-color: var(--primary-light);
             transform: translateY(-2px);
         }
-        /* Red on Black Theme for Complaints Box */
         .complaints-box {
             background-color: #000000;
             color: #ff0000;
@@ -58,8 +56,6 @@
             font-size: 0.85rem;
             font-weight: normal;
         }
-
-        /* Custom Accordion Styles */
         .accordion-content {
             max-height: 0;
             overflow: hidden;
@@ -76,7 +72,6 @@
 <body class="py-10 px-4">
 
     <div class="max-w-4xl mx-auto shadow-2xl rounded-r-3xl overflow-hidden form-container">
-        <!-- Header -->
         <div class="p-8 text-white text-center sm:text-left" style="background-color: var(--primary-dark);">
             <h1 class="text-4xl sm:text-5xl font-black lovelo italic">ECA Quizverse 1.0</h1>
             <div class="h-1 w-24 bg-blue-400 my-4 mx-auto sm:mx-0"></div>
@@ -86,12 +81,10 @@
 
         <form id="quizForm" class="p-6 sm:p-10 space-y-8">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <!-- Name -->
                 <div>
                     <label class="block text-sm font-black uppercase mb-2">Name <span class="text-red-500">*</span></label>
                     <input type="text" name="name" required placeholder="Full Name" class="w-full input-box p-4 rounded-xl font-semibold">
                 </div>
-                <!-- Batch -->
                 <div>
                     <label class="block text-sm font-black uppercase mb-2">Batch <span class="text-red-500">*</span></label>
                     <select name="batch" required class="w-full input-box p-4 rounded-xl font-semibold bg-white">
@@ -104,13 +97,11 @@
                 </div>
             </div>
 
-            <!-- Designation -->
             <div>
                 <label class="block text-sm font-black uppercase mb-2">Official Designation <span class="text-red-500">*</span></label>
                 <input type="text" name="designation" required placeholder="e.g. Executive Member (if none, write General Member)" class="w-full input-box p-4 rounded-xl font-semibold">
             </div>
 
-            <!-- Role Multi-select -->
             <div>
                 <label class="block text-sm font-black uppercase mb-3">Roles Handled (Multiple) <span class="text-red-500">*</span></label>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 p-4 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200">
@@ -149,32 +140,27 @@
                 </div>
             </div>
 
-            <!-- Reported To (New Option) -->
             <div>
                 <label class="block text-sm font-black uppercase mb-1">Reported to whom? <span class="text-red-500">*</span></label>
                 <p class="text-xs text-gray-500 font-semibold italic mb-2">Mention the people you worked under during this event</p>
                 <input type="text" name="reportedTo" required placeholder="Names of supervisors/leads" class="w-full input-box p-4 rounded-xl font-semibold">
             </div>
 
-            <!-- Specific Works -->
             <div>
                 <label class="block text-sm font-black uppercase mb-2">Specific Works <span class="text-red-500">*</span></label>
                 <textarea name="works" required rows="3" class="w-full input-box p-4 rounded-xl font-medium"></textarea>
             </div>
 
-            <!-- Experience -->
             <div>
                 <label class="block text-sm font-black uppercase mb-2">Experience <span class="text-red-500">*</span></label>
                 <textarea name="experience" required rows="6" placeholder="Describe your experience in detail..." class="w-full input-box p-4 rounded-xl font-medium"></textarea>
             </div>
 
-            <!-- Suggestions -->
             <div>
                 <label class="block text-sm font-black uppercase mb-2">Suggestions <span class="text-red-500">*</span></label>
                 <textarea name="suggestions" required rows="6" placeholder="Help us improve for the next event..." class="w-full input-box p-4 rounded-xl font-medium"></textarea>
             </div>
 
-            <!-- Complaints (Red on Black Theme) -->
             <div class="p-6 rounded-3xl bg-black shadow-lg">
                 <label class="block text-sm font-black uppercase mb-2 text-red-600">Complaints (Optional & Anonymous)</label>
                 <textarea id="complaintsBox" name="complaints" rows="3" placeholder="This information is strictly confidential and no names or info will be stored, only your complaint will be send to us anonymously" class="w-full p-4 rounded-xl complaints-box font-bold"></textarea>
@@ -186,7 +172,6 @@
         </form>
     </div>
 
-    <!-- Admin Section -->
     <div class="mt-20 max-w-5xl mx-auto">
         <div class="text-center mb-10">
             <button onclick="toggleAdmin()" class="lovelo text-xs font-bold py-2 px-6 rounded-full border-2 border-[#123144] hover:bg-[#123144] hover:text-white transition">Secure Admin Access</button>
@@ -209,36 +194,44 @@
                             <option value="103">103</option>
                             <option value="104">104</option>
                         </select>
+                        <select id="filterRole" class="p-2 rounded-lg text-black text-sm outline-none" onchange="applyFilters()">
+                            <option value="">All Roles</option>
+                            <option value="Logistics">Logistics</option>
+                            <option value="Food">Food</option>
+                            <option value="Room Management">Room Management</option>
+                            <option value="Quizmaster and Questions">Quizmaster & Questions</option>
+                            <option value="Promotion">Promotion</option>
+                            <option value="Content and Design">Content & Design</option>
+                            <option value="Sponsor Management">Sponsor Management</option>
+                            <option value="Documentation">Documentation</option>
+                        </select>
                         <button onclick="logoutAdmin()" class="bg-red-500 px-4 py-2 rounded-lg font-bold text-xs uppercase">Logout</button>
                     </div>
                 </div>
             </div>
 
             <div id="dbOutput" class="p-4 sm:p-8 space-y-4">
-                <!-- Accordion items will load here -->
                 <p class="text-center text-gray-400 font-bold py-10">Please login to view entries.</p>
             </div>
         </div>
     </div>
 
     <script>
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz1j9sMEPB6lM2j96yMtbRuMnuupNkBdIOD2D5Y0z8N_E5Oohzu_CF8lOuPYZieuHTN/exec';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwABb9H0etUJ_P5cQvdopN60zMTZvuWQhfzUgzP4GVlAJjyJywfBphUwtAsXaB41Xnw/exec';
         let rawData = [];
-
-        // Updated Handle ENTER to navigate or submit (to include newly added field)
         const form = document.getElementById('quizForm');
-        
-        // Function to refresh input list and add listeners
+
         function setupNavigation() {
-            const currentInputs = Array.from(form.querySelectorAll('input:not([type="checkbox"]), select, textarea'));
-            currentInputs.forEach((input, index) => {
+            // Include all form controls except checkboxes in the Enter navigation
+            const controls = Array.from(form.querySelectorAll('input:not([type="checkbox"]), select, textarea'));
+            controls.forEach((input, index) => {
                 input.onkeydown = (e) => {
                     if (e.key === 'Enter') {
                         e.preventDefault();
                         if (input.id === 'complaintsBox') {
                             submitForm();
                         } else {
-                            const next = currentInputs[index + 1];
+                            const next = controls[index + 1];
                             if (next) next.focus();
                         }
                     }
@@ -247,7 +240,6 @@
         }
         setupNavigation();
 
-        // Admin Password Enter Key
         document.getElementById('adminPass').addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
                 e.preventDefault();
@@ -255,7 +247,6 @@
             }
         });
 
-        // Form Submission logic
         async function submitForm() {
             const checkedRoles = document.querySelectorAll('input[name="role"]:checked');
             if(checkedRoles.length === 0) {
@@ -283,16 +274,15 @@
 
                 const resText = await response.text();
                 if (resText === "Success") {
-                    alert("Form submitted successfully! Thank you for your feedback.");
+                    alert("Form submitted successfully!");
                     form.reset();
-                    const firstInput = form.querySelector('input');
-                    if (firstInput) firstInput.focus();
+                    form.querySelector('input').focus();
                 } else {
                     throw new Error("Server rejected request");
                 }
             } catch (err) {
                 console.error(err);
-                alert("Connection Error: Could not save to database. Ensure your Apps Script URL is correct.");
+                alert("Connection Error. Check your SCRIPT_URL.");
             } finally {
                 btn.innerText = "SUBMIT";
                 btn.disabled = false;
@@ -330,7 +320,7 @@
                     alert("Invalid Password");
                 }
             } catch (e) {
-                alert("Failed to connect. Check SCRIPT_URL or permissions.");
+                alert("Failed to connect.");
             } finally {
                 btn.innerText = "Login";
             }
@@ -343,9 +333,9 @@
                 return;
             }
 
-            container.innerHTML = data.map((row, index) => {
-                // Adjustment: Assuming new Google Sheet column order includes "Reported To"
-                // Order expected: Timestamp[0], Name[1], Batch[2], Designation[3], Role[4], ReportedTo[5], Works[6], Experience[7], Suggestions[8], Complaints[9]
+            container.innerHTML = data.map((row) => {
+                // Column Indexes based on Apps Script appendRow order:
+                // 0:Time, 1:Name, 2:Batch, 3:Designation, 4:Role, 5:ReportedTo, 6:Works, 7:Experience, 8:Suggestions, 9:Complaints
                 return `
                 <div class="accordion-item border-2 border-gray-100 rounded-2xl overflow-hidden bg-white shadow-sm transition-all hover:border-[#1f4d79]">
                     <button class="w-full p-5 flex justify-between items-center text-left" onclick="toggleAccordion(this)">
@@ -402,10 +392,15 @@
         function applyFilters() {
             const searchTerm = document.getElementById('searchName').value.toLowerCase();
             const filterBatch = document.getElementById('filterBatch').value;
+            const filterRole = document.getElementById('filterRole').value.toLowerCase();
+            
             const filtered = rawData.slice(1).filter(row => {
                 const matchesName = row[1].toLowerCase().includes(searchTerm);
                 const matchesBatch = filterBatch === "" || row[2].toString() === filterBatch;
-                return matchesName && matchesBatch;
+                // Roles are stored as a comma-separated string in row[4]
+                const matchesRole = filterRole === "" || row[4].toLowerCase().includes(filterRole);
+                
+                return matchesName && matchesBatch && matchesRole;
             });
             renderEntries(filtered);
         }
@@ -416,6 +411,10 @@
             document.getElementById('loginGroup').classList.remove('hidden');
             document.getElementById('filterGroup').classList.add('hidden');
             document.getElementById('adminPass').value = '';
+            // Reset filters
+            document.getElementById('searchName').value = '';
+            document.getElementById('filterBatch').value = '';
+            document.getElementById('filterRole').value = '';
         }
     </script>
 </body>
