@@ -67,10 +67,19 @@
         .accordion-item.active .chevron {
             transform: rotate(180deg);
         }
+        /* Custom scrollbar for admin area */
+        #dbOutput::-webkit-scrollbar {
+            width: 6px;
+        }
+        #dbOutput::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
     </style>
 </head>
 <body class="py-10 px-4">
 
+    <!-- Feedback Form Section -->
     <div class="max-w-4xl mx-auto shadow-2xl rounded-r-3xl overflow-hidden form-container">
         <div class="p-8 text-white text-center sm:text-left" style="background-color: var(--primary-dark);">
             <h1 class="text-4xl sm:text-5xl font-black lovelo italic">ECA Quizverse 1.0</h1>
@@ -172,18 +181,24 @@
         </form>
     </div>
 
-    <div class="mt-20 max-w-5xl mx-auto">
+    <!-- Admin Section -->
+    <div class="mt-20 max-w-5xl mx-auto pb-20">
         <div class="text-center mb-10">
             <button onclick="toggleAdmin()" class="lovelo text-xs font-bold py-2 px-6 rounded-full border-2 border-[#123144] hover:bg-[#123144] hover:text-white transition">Secure Admin Access</button>
         </div>
 
         <div id="adminContainer" class="hidden bg-white rounded-3xl shadow-2xl overflow-hidden border-2 border-[#123144]">
             <div class="p-8 bg-[#123144] text-white flex flex-col md:flex-row justify-between items-center gap-4">
-                <h2 class="text-2xl font-black lovelo">Admin Master Database</h2>
+                <div class="flex items-center gap-3">
+                    <h2 class="text-2xl font-black lovelo">Admin Master Database</h2>
+                    <span id="persistentBadge" class="hidden text-[10px] bg-green-500 text-white px-2 py-1 rounded font-black">PERSISTENT</span>
+                </div>
+
                 <div id="loginGroup" class="flex gap-2 w-full md:w-auto">
                     <input type="password" id="adminPass" placeholder="Password" class="p-2 rounded-lg text-black w-full md:w-48 outline-none">
-                    <button onclick="fetchData()" class="bg-[#1f4d79] px-4 py-2 rounded-lg font-bold hover:bg-white hover:text-[#123144] transition">Login</button>
+                    <button id="loginBtn" onclick="fetchData()" class="bg-[#1f4d79] px-4 py-2 rounded-lg font-bold hover:bg-white hover:text-[#123144] transition">Login</button>
                 </div>
+
                 <div id="filterGroup" class="hidden w-full space-y-4 md:space-y-0">
                     <div class="flex flex-wrap gap-2 justify-center">
                         <input type="text" id="searchName" placeholder="Search by name..." class="p-2 rounded-lg text-black text-sm w-full md:w-48 outline-none" oninput="applyFilters()">
@@ -205,12 +220,12 @@
                             <option value="Sponsor Management">Sponsor Management</option>
                             <option value="Documentation">Documentation</option>
                         </select>
-                        <button onclick="logoutAdmin()" class="bg-red-500 px-4 py-2 rounded-lg font-bold text-xs uppercase">Logout</button>
+                        <button onclick="logoutAdmin()" class="bg-red-500 px-4 py-2 rounded-lg font-bold text-xs uppercase shadow-md shadow-red-500/20">Logout</button>
                     </div>
                 </div>
             </div>
 
-            <div id="dbOutput" class="p-4 sm:p-8 space-y-4">
+            <div id="dbOutput" class="p-4 sm:p-8 space-y-4 min-h-[300px]">
                 <p class="text-center text-gray-400 font-bold py-10">Please login to view entries.</p>
             </div>
         </div>
@@ -218,8 +233,20 @@
 
     <script>
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby8wlQ-4EaPF6NdiWGiKgNt3Ppc18HUgYkBhRz81h9UqBMhroXYUarZ7C8Qdybtwexz/exec';
+        const STORAGE_KEY = 'eca_quizverse_admin_session';
         let rawData = [];
         const form = document.getElementById('quizForm');
+
+        // --- Persistent Login Logic ---
+        window.addEventListener('load', () => {
+            const savedPassword = localStorage.getItem(STORAGE_KEY);
+            if (savedPassword) {
+                // Show admin container and attempt background login
+                document.getElementById('adminContainer').classList.remove('hidden');
+                document.getElementById('adminPass').value = savedPassword;
+                fetchData(true); // Pass 'true' to indicate auto-login
+            }
+        });
 
         function setupNavigation() {
             const controls = Array.from(form.querySelectorAll('input:not([type="checkbox"]), select, textarea'));
@@ -256,16 +283,10 @@
             const formData = new FormData(form);
             const data = Object.fromEntries(formData.entries());
             
-            // Logic for regular fields
             for (let key in data) {
-                if (key !== 'complaints' && data[key].toString().trim() === "") {
+                if (data[key].toString().trim() === "") {
                     data[key] = "No Data";
                 }
-            }
-
-            // Specific logic for Complaints box
-            if (!data.complaints || data.complaints.toString().trim() === "") {
-                data.complaints = "No complaints filed";
             }
 
             const roles = [];
@@ -291,7 +312,7 @@
                 console.error(err);
                 alert("Connection Error. Check your SCRIPT_URL.");
             } finally {
-                btn.innerText = "SUBMIT";
+                btn.innerText = "Submit";
                 btn.disabled = false;
             }
         }
@@ -305,11 +326,18 @@
             document.getElementById('adminContainer').classList.toggle('hidden');
         }
 
-        async function fetchData() {
+        async function fetchData(isAutoLogin = false) {
             const pass = document.getElementById('adminPass').value;
             if (!pass) return;
-            const btn = document.querySelector('#loginGroup button');
-            btn.innerText = "...";
+
+            const loginBtn = document.getElementById('loginBtn');
+            const output = document.getElementById('dbOutput');
+            
+            if (!isAutoLogin) loginBtn.innerText = "...";
+            output.innerHTML = `<div class="flex flex-col items-center justify-center py-20">
+                <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-[#123144] mb-4"></div>
+                <p class="font-bold text-gray-500">${isAutoLogin ? 'Restoring Admin Session...' : 'Verifying Credentials...'}</p>
+            </div>`;
 
             try {
                 const response = await fetch(SCRIPT_URL, {
@@ -320,16 +348,25 @@
                 const result = await response.json();
                 if (Array.isArray(result)) {
                     rawData = result;
+                    
+                    // SAVE TO LOCAL STORAGE
+                    localStorage.setItem(STORAGE_KEY, pass);
+                    
                     document.getElementById('loginGroup').classList.add('hidden');
                     document.getElementById('filterGroup').classList.remove('hidden');
+                    document.getElementById('persistentBadge').classList.remove('hidden');
                     renderEntries(result.slice(1));
                 } else {
-                    alert("Invalid Password");
+                    if (isAutoLogin) {
+                        localStorage.removeItem(STORAGE_KEY);
+                    }
+                    output.innerHTML = `<p class="text-center text-red-500 font-bold py-10">Invalid Password or Session Expired.</p>`;
+                    if(!isAutoLogin) alert("Invalid Password");
                 }
             } catch (e) {
-                alert("Failed to connect.");
+                output.innerHTML = `<p class="text-center text-red-400 font-bold py-10">Failed to connect to database.</p>`;
             } finally {
-                btn.innerText = "Login";
+                loginBtn.innerText = "Login";
             }
         }
 
@@ -374,7 +411,7 @@
                                 <h4 class="text-xs font-black uppercase text-gray-400 mb-1">Suggestions</h4>
                                 <p class="text-sm font-medium text-gray-700 whitespace-pre-wrap">${row[8]}</p>
                             </div>
-                            <div class="md:col-span-2 bg-red-50 p-4 rounded-xl">
+                            <div class="md:col-span-2 bg-red-50 p-4 rounded-xl border border-red-100">
                                 <h4 class="text-xs font-black uppercase text-red-400 mb-1">Anonymous Complaint</h4>
                                 <p class="text-sm font-bold text-red-900 italic">${row[9]}</p>
                             </div>
@@ -409,10 +446,14 @@
         }
 
         function logoutAdmin() {
+            // REMOVE FROM LOCAL STORAGE
+            localStorage.removeItem(STORAGE_KEY);
+            
             rawData = [];
             document.getElementById('dbOutput').innerHTML = `<p class="text-center text-gray-400 font-bold py-10">Please login to view entries.</p>`;
             document.getElementById('loginGroup').classList.remove('hidden');
             document.getElementById('filterGroup').classList.add('hidden');
+            document.getElementById('persistentBadge').classList.add('hidden');
             document.getElementById('adminPass').value = '';
             document.getElementById('searchName').value = '';
             document.getElementById('filterBatch').value = '';
