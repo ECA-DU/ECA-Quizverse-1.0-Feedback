@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ECA Quizverse 1.0 - Official Feedback</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Importing a font similar to Lovelo (Geometric Sans Serif) -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-dark: #123144;
+            --primary-light: #1f4d79;
+        }
+        body {
+            background-color: #f0f4f8;
+            font-family: 'Inter', sans-serif;
+            color: var(--primary-dark);
+        }
+        .lovelo {
+            font-family: 'Montserrat', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .form-container {
+            background: #ffffff;
+            border-left: 12px solid var(--primary-dark);
+        }
+        .input-box {
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+        .input-box:focus {
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 4px rgba(31, 77, 121, 0.1);
+            outline: none;
+        }
+        .btn-submit {
+            background-color: var(--primary-dark);
+            transition: transform 0.2s;
+        }
+        .btn-submit:hover {
+            background-color: var(--primary-light);
+            transform: translateY(-2px);
+        }
+        /* Red on Black Theme for Complaints Box */
+        .complaints-box {
+            background-color: #000000;
+            color: #ff0000;
+            border: 2px solid #ff0000;
+        }
+        .complaints-box:focus {
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(255, 0, 0, 0.3);
+        }
+        .complaints-box::placeholder {
+            color: rgba(255, 0, 0, 0.6);
+            font-size: 0.85rem;
+            font-weight: normal;
+        }
+
+        /* Custom Accordion Styles */
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        .accordion-item.active .accordion-content {
+            max-height: 1000px;
+        }
+        .accordion-item.active .chevron {
+            transform: rotate(180deg);
+        }
+    </style>
+</head>
+<body class="py-10 px-4">
+
+    <div class="max-w-4xl mx-auto shadow-2xl rounded-r-3xl overflow-hidden form-container">
+        <!-- Header -->
+        <div class="p-8 text-white text-center sm:text-left" style="background-color: var(--primary-dark);">
+            <h1 class="text-4xl sm:text-5xl font-black lovelo italic">ECA Quizverse 1.0</h1>
+            <div class="h-1 w-24 bg-blue-400 my-4 mx-auto sm:mx-0"></div>
+            <p class="text-lg font-bold opacity-90 uppercase tracking-widest">Official Feedback Form</p>
+            <p class="text-sm opacity-70 mt-1">Economics Career Alliance | Dept. of Economics</p>
+        </div>
+
+        <form id="quizForm" class="p-6 sm:p-10 space-y-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Name -->
+                <div>
+                    <label class="block text-sm font-black uppercase mb-2">Name <span class="text-red-500">*</span></label>
+                    <input type="text" name="name" required placeholder="Full Name" class="w-full input-box p-4 rounded-xl font-semibold">
+                </div>
+                <!-- Batch -->
+                <div>
+                    <label class="block text-sm font-black uppercase mb-2">Batch <span class="text-red-500">*</span></label>
+                    <select name="batch" required class="w-full input-box p-4 rounded-xl font-semibold bg-white">
+                        <option value="">Select Batch</option>
+                        <option value="101">101</option>
+                        <option value="102">102</option>
+                        <option value="103">103</option>
+                        <option value="104">104</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Designation -->
+            <div>
+                <label class="block text-sm font-black uppercase mb-2">Official Designation <span class="text-red-500">*</span></label>
+                <input type="text" name="designation" required placeholder="e.g. Executive Member (if none, write General Member)" class="w-full input-box p-4 rounded-xl font-semibold">
+            </div>
+
+            <!-- Role Multi-select -->
+            <div>
+                <label class="block text-sm font-black uppercase mb-3">Roles Handled (Multiple) <span class="text-red-500">*</span></label>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 p-4 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200">
+                    <label class="flex items-center space-x-3 cursor-pointer p-2 hover:bg-white rounded-lg transition">
+                        <input type="checkbox" name="role" value="Logistics" class="w-5 h-5 accent-[#1f4d79]">
+                        <span class="font-bold text-gray-700">Logistics</span>
+                    </label>
+                    <label class="flex items-center space-x-3 cursor-pointer p-2 hover:bg-white rounded-lg transition">
+                        <input type="checkbox" name="role" value="Food" class="w-5 h-5 accent-[#1f4d79]">
+                        <span class="font-bold text-gray-700">Food</span>
+                    </label>
+                    <label class="flex items-center space-x-3 cursor-pointer p-2 hover:bg-white rounded-lg transition">
+                        <input type="checkbox" name="role" value="Room Management" class="w-5 h-5 accent-[#1f4d79]">
+                        <span class="font-bold text-gray-700">Room Management</span>
+                    </label>
+                    <label class="flex items-center space-x-3 cursor-pointer p-2 hover:bg-white rounded-lg transition">
+                        <input type="checkbox" name="role" value="Quizmaster and Questions" class="w-5 h-5 accent-[#1f4d79]">
+                        <span class="font-bold text-gray-700">Quizmaster & Questions</span>
+                    </label>
+                    <label class="flex items-center space-x-3 cursor-pointer p-2 hover:bg-white rounded-lg transition">
+                        <input type="checkbox" name="role" value="Promotion" class="w-5 h-5 accent-[#1f4d79]">
+                        <span class="font-bold text-gray-700">Promotion</span>
+                    </label>
+                    <label class="flex items-center space-x-3 cursor-pointer p-2 hover:bg-white rounded-lg transition">
+                        <input type="checkbox" name="role" value="Content and Design" class="w-5 h-5 accent-[#1f4d79]">
+                        <span class="font-bold text-gray-700">Content & Design</span>
+                    </label>
+                    <label class="flex items-center space-x-3 cursor-pointer p-2 hover:bg-white rounded-lg transition">
+                        <input type="checkbox" name="role" value="Sponsor Management" class="w-5 h-5 accent-[#1f4d79]">
+                        <span class="font-bold text-gray-700">Sponsor Management</span>
+                    </label>
+                    <label class="flex items-center space-x-3 cursor-pointer p-2 hover:bg-white rounded-lg transition">
+                        <input type="checkbox" name="role" value="Documentation" class="w-5 h-5 accent-[#1f4d79]">
+                        <span class="font-bold text-gray-700">Documentation</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Specific Works -->
+            <div>
+                <label class="block text-sm font-black uppercase mb-2">Specific Works <span class="text-red-500">*</span></label>
+                <textarea name="works" required rows="3" class="w-full input-box p-4 rounded-xl font-medium"></textarea>
+            </div>
+
+            <!-- Experience -->
+            <div>
+                <label class="block text-sm font-black uppercase mb-2">Experience <span class="text-red-500">*</span></label>
+                <textarea name="experience" required rows="6" placeholder="Describe your experience in detail..." class="w-full input-box p-4 rounded-xl font-medium"></textarea>
+            </div>
+
+            <!-- Suggestions -->
+            <div>
+                <label class="block text-sm font-black uppercase mb-2">Suggestions <span class="text-red-500">*</span></label>
+                <textarea name="suggestions" required rows="6" placeholder="Help us improve for the next event..." class="w-full input-box p-4 rounded-xl font-medium"></textarea>
+            </div>
+
+            <!-- Complaints (Red on Black Theme) -->
+            <div class="p-6 rounded-3xl bg-black shadow-lg">
+                <label class="block text-sm font-black uppercase mb-2 text-red-600">Complaints (Optional & Anonymous)</label>
+                <textarea name="complaints" rows="3" placeholder="This information is strictly confidential and no names or info will be stored, only your complaint will be send to us anonymously" class="w-full p-4 rounded-xl complaints-box font-bold"></textarea>
+            </div>
+
+            <button type="submit" id="submitBtn" class="w-full text-white py-6 rounded-2xl text-2xl font-black lovelo shadow-xl btn-submit">
+                Submit
+            </button>
+        </form>
+    </div>
+
+    <!-- Admin Section -->
+    <div class="mt-20 max-w-5xl mx-auto">
+        <div class="text-center mb-10">
+            <button onclick="toggleAdmin()" class="lovelo text-xs font-bold py-2 px-6 rounded-full border-2 border-[#123144] hover:bg-[#123144] hover:text-white transition">Secure Admin Access</button>
+        </div>
+
+        <div id="adminContainer" class="hidden bg-white rounded-3xl shadow-2xl overflow-hidden border-2 border-[#123144]">
+            <div class="p-8 bg-[#123144] text-white flex flex-col md:flex-row justify-between items-center gap-4">
+                <h2 class="text-2xl font-black lovelo">Admin Master Database</h2>
+                <div id="loginGroup" class="flex gap-2 w-full md:w-auto">
+                    <input type="password" id="adminPass" placeholder="Password" class="p-2 rounded-lg text-black w-full md:w-48 outline-none">
+                    <button onclick="fetchData()" class="bg-[#1f4d79] px-4 py-2 rounded-lg font-bold hover:bg-white hover:text-[#123144] transition">Login</button>
+                </div>
+                <div id="filterGroup" class="hidden w-full space-y-4 md:space-y-0">
+                    <div class="flex flex-wrap gap-2 justify-center">
+                        <input type="text" id="searchName" placeholder="Search by name..." class="p-2 rounded-lg text-black text-sm w-full md:w-48 outline-none" oninput="applyFilters()">
+                        <select id="filterBatch" class="p-2 rounded-lg text-black text-sm outline-none" onchange="applyFilters()">
+                            <option value="">All Batches</option>
+                            <option value="101">101</option>
+                            <option value="102">102</option>
+                            <option value="103">103</option>
+                            <option value="104">104</option>
+                        </select>
+                        <button onclick="logoutAdmin()" class="bg-red-500 px-4 py-2 rounded-lg font-bold text-xs uppercase">Logout</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="dbOutput" class="p-4 sm:p-8 space-y-4">
+                <!-- Accordion items will load here -->
+                <p class="text-center text-gray-400 font-bold py-10">Please login to view entries.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz1j9sMEPB6lM2j96yMtbRuMnuupNkBdIOD2D5Y0z8N_E5Oohzu_CF8lOuPYZieuHTN/exec';
+        let rawData = [];
+
+        // Form Submission
+        document.getElementById('quizForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const checkedRoles = document.querySelectorAll('input[name="role"]:checked');
+            if(checkedRoles.length === 0) {
+                alert("Please select at least one Role.");
+                return;
+            }
+
+            const btn = document.getElementById('submitBtn');
+            btn.innerText = "SUBMITTING...";
+            btn.disabled = true;
+
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData.entries());
+            
+            const roles = [];
+            checkedRoles.forEach(cb => roles.push(cb.value));
+            data.role = roles.join(', ');
+            data.action = 'submit';
+
+            try {
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify(data)
+                });
+
+                const resText = await response.text();
+                if (resText === "Success") {
+                    alert("Form submitted successfully! Thank you for your feedback.");
+                    e.target.reset();
+                } else {
+                    throw new Error("Server rejected request");
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Connection Error: Could not save to database. Ensure your Apps Script URL is correct and deployed as 'Anyone'.");
+            } finally {
+                btn.innerText = "SUBMIT";
+                btn.disabled = false;
+            }
+        });
+
+        function toggleAdmin() {
+            document.getElementById('adminContainer').classList.toggle('hidden');
+        }
+
+        async function fetchData() {
+            const pass = document.getElementById('adminPass').value;
+            const btn = document.querySelector('#loginGroup button');
+            btn.innerText = "...";
+
+            try {
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ action: 'fetch', password: pass })
+                });
+
+                const result = await response.json();
+                if (Array.isArray(result)) {
+                    rawData = result;
+                    document.getElementById('loginGroup').classList.add('hidden');
+                    document.getElementById('filterGroup').classList.remove('hidden');
+                    renderEntries(result.slice(1));
+                } else {
+                    alert("Invalid Password");
+                }
+            } catch (e) {
+                alert("Failed to connect. Check SCRIPT_URL or permissions.");
+            } finally {
+                btn.innerText = "Login";
+            }
+        }
+
+        function renderEntries(data) {
+            const container = document.getElementById('dbOutput');
+            if (data.length === 0) {
+                container.innerHTML = `<p class="text-center text-gray-400 py-10">No entries found matching filters.</p>`;
+                return;
+            }
+
+            container.innerHTML = data.map((row, index) => {
+                return `
+                <div class="accordion-item border-2 border-gray-100 rounded-2xl overflow-hidden bg-white shadow-sm transition-all hover:border-[#1f4d79]">
+                    <button class="w-full p-5 flex justify-between items-center text-left" onclick="toggleAccordion(this)">
+                        <div>
+                            <span class="text-xs font-bold text-[#1f4d79] block uppercase tracking-widest">${row[2]} | ${row[3]}</span>
+                            <span class="text-xl font-black text-[#123144]">${row[1]}</span>
+                        </div>
+                        <svg class="chevron w-6 h-6 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div class="accordion-content bg-gray-50 border-t border-gray-100">
+                        <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <h4 class="text-xs font-black uppercase text-gray-400 mb-1">Roles Handled</h4>
+                                <p class="font-bold text-[#123144]">${row[4]}</p>
+                            </div>
+                            <div>
+                                <h4 class="text-xs font-black uppercase text-gray-400 mb-1">Specific Works</h4>
+                                <p class="text-sm font-medium text-gray-700">${row[5]}</p>
+                            </div>
+                            <div class="md:col-span-2">
+                                <h4 class="text-xs font-black uppercase text-gray-400 mb-1">Detailed Experience</h4>
+                                <p class="text-sm font-medium text-gray-700 whitespace-pre-wrap">${row[6]}</p>
+                            </div>
+                            <div class="md:col-span-2">
+                                <h4 class="text-xs font-black uppercase text-gray-400 mb-1">Suggestions</h4>
+                                <p class="text-sm font-medium text-gray-700 whitespace-pre-wrap">${row[7]}</p>
+                            </div>
+                            <div class="md:col-span-2 bg-red-50 p-4 rounded-xl">
+                                <h4 class="text-xs font-black uppercase text-red-400 mb-1">Anonymous Complaint</h4>
+                                <p class="text-sm font-bold text-red-900 italic">${row[8] || 'No complaints filed.'}</p>
+                            </div>
+                            <div class="md:col-span-2 text-[10px] text-gray-300 italic">
+                                Timestamp: ${row[0]}
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        function toggleAccordion(btn) {
+            const item = btn.closest('.accordion-item');
+            const isActive = item.classList.contains('active');
+            document.querySelectorAll('.accordion-item').forEach(el => el.classList.remove('active'));
+            if (!isActive) item.classList.add('active');
+        }
+
+        function applyFilters() {
+            const searchTerm = document.getElementById('searchName').value.toLowerCase();
+            const filterBatch = document.getElementById('filterBatch').value;
+            const filtered = rawData.slice(1).filter(row => {
+                const matchesName = row[1].toLowerCase().includes(searchTerm);
+                const matchesBatch = filterBatch === "" || row[2].toString() === filterBatch;
+                return matchesName && matchesBatch;
+            });
+            renderEntries(filtered);
+        }
+
+        function logoutAdmin() {
+            rawData = [];
+            document.getElementById('dbOutput').innerHTML = `<p class="text-center text-gray-400 font-bold py-10">Please login to view entries.</p>`;
+            document.getElementById('loginGroup').classList.remove('hidden');
+            document.getElementById('filterGroup').classList.add('hidden');
+            document.getElementById('adminPass').value = '';
+        }
+    </script>
+</body>
+</html>
