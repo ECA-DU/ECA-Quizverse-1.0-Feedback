@@ -217,23 +217,18 @@
     </div>
 
     <script>
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwABb9H0etUJ_P5cQvdopN60zMTZvuWQhfzUgzP4GVlAJjyJywfBphUwtAsXaB41Xnw/exec';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby8wlQ-4EaPF6NdiWGiKgNt3Ppc18HUgYkBhRz81h9UqBMhroXYUarZ7C8Qdybtwexz/exec';
         let rawData = [];
         const form = document.getElementById('quizForm');
 
         function setupNavigation() {
-            // Include all form controls except checkboxes in the Enter navigation
             const controls = Array.from(form.querySelectorAll('input:not([type="checkbox"]), select, textarea'));
             controls.forEach((input, index) => {
                 input.onkeydown = (e) => {
-                    if (e.key === 'Enter') {
+                    if (e.key === 'Enter' && input.tagName !== 'TEXTAREA') {
                         e.preventDefault();
-                        if (input.id === 'complaintsBox') {
-                            submitForm();
-                        } else {
-                            const next = controls[index + 1];
-                            if (next) next.focus();
-                        }
+                        const next = controls[index + 1];
+                        if (next) next.focus();
                     }
                 };
             });
@@ -261,9 +256,16 @@
             const formData = new FormData(form);
             const data = Object.fromEntries(formData.entries());
             
+            // Logic: Replace empty strings with "No Data"
+            for (let key in data) {
+                if (data[key].toString().trim() === "") {
+                    data[key] = "No Data";
+                }
+            }
+
             const roles = [];
             checkedRoles.forEach(cb => roles.push(cb.value));
-            data.role = roles.join(', ');
+            data.role = roles.length > 0 ? roles.join(', ') : "No Data";
             data.action = 'submit';
 
             try {
@@ -334,8 +336,6 @@
             }
 
             container.innerHTML = data.map((row) => {
-                // Column Indexes based on Apps Script appendRow order:
-                // 0:Time, 1:Name, 2:Batch, 3:Designation, 4:Role, 5:ReportedTo, 6:Works, 7:Experience, 8:Suggestions, 9:Complaints
                 return `
                 <div class="accordion-item border-2 border-gray-100 rounded-2xl overflow-hidden bg-white shadow-sm transition-all hover:border-[#1f4d79]">
                     <button class="w-full p-5 flex justify-between items-center text-left" onclick="toggleAccordion(this)">
@@ -355,7 +355,7 @@
                             </div>
                             <div>
                                 <h4 class="text-xs font-black uppercase text-gray-400 mb-1">Reported To</h4>
-                                <p class="font-bold text-[#1f4d79]">${row[5] || 'N/A'}</p>
+                                <p class="font-bold text-[#1f4d79]">${row[5]}</p>
                             </div>
                             <div class="md:col-span-2">
                                 <h4 class="text-xs font-black uppercase text-gray-400 mb-1">Specific Works</h4>
@@ -371,7 +371,7 @@
                             </div>
                             <div class="md:col-span-2 bg-red-50 p-4 rounded-xl">
                                 <h4 class="text-xs font-black uppercase text-red-400 mb-1">Anonymous Complaint</h4>
-                                <p class="text-sm font-bold text-red-900 italic">${row[9] || 'No complaints filed.'}</p>
+                                <p class="text-sm font-bold text-red-900 italic">${row[9]}</p>
                             </div>
                             <div class="md:col-span-2 text-[10px] text-gray-300 italic">
                                 Timestamp: ${row[0]}
@@ -395,11 +395,9 @@
             const filterRole = document.getElementById('filterRole').value.toLowerCase();
             
             const filtered = rawData.slice(1).filter(row => {
-                const matchesName = row[1].toLowerCase().includes(searchTerm);
+                const matchesName = row[1].toString().toLowerCase().includes(searchTerm);
                 const matchesBatch = filterBatch === "" || row[2].toString() === filterBatch;
-                // Roles are stored as a comma-separated string in row[4]
-                const matchesRole = filterRole === "" || row[4].toLowerCase().includes(filterRole);
-                
+                const matchesRole = filterRole === "" || row[4].toString().toLowerCase().includes(filterRole);
                 return matchesName && matchesBatch && matchesRole;
             });
             renderEntries(filtered);
@@ -411,7 +409,6 @@
             document.getElementById('loginGroup').classList.remove('hidden');
             document.getElementById('filterGroup').classList.add('hidden');
             document.getElementById('adminPass').value = '';
-            // Reset filters
             document.getElementById('searchName').value = '';
             document.getElementById('filterBatch').value = '';
             document.getElementById('filterRole').value = '';
