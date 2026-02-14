@@ -256,11 +256,16 @@
             const formData = new FormData(form);
             const data = Object.fromEntries(formData.entries());
             
-            // Logic: Replace empty strings with "No Data"
+            // Logic for regular fields
             for (let key in data) {
-                if (data[key].toString().trim() === "") {
+                if (key !== 'complaints' && data[key].toString().trim() === "") {
                     data[key] = "No Data";
                 }
+            }
+
+            // Specific logic for Complaints box
+            if (!data.complaints || data.complaints.toString().trim() === "") {
+                data.complaints = "No complaints filed";
             }
 
             const roles = [];
