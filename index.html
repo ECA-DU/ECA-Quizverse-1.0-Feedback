@@ -170,7 +170,7 @@
             <!-- Complaints (Red on Black Theme) -->
             <div class="p-6 rounded-3xl bg-black shadow-lg">
                 <label class="block text-sm font-black uppercase mb-2 text-red-600">Complaints (Optional & Anonymous)</label>
-                <textarea name="complaints" rows="3" placeholder="This information is strictly confidential and no names or info will be stored, only your complaint will be send to us anonymously" class="w-full p-4 rounded-xl complaints-box font-bold"></textarea>
+                <textarea id="complaintsBox" name="complaints" rows="3" placeholder="This information is strictly confidential and no names or info will be stored, only your complaint will be send to us anonymously" class="w-full p-4 rounded-xl complaints-box font-bold"></textarea>
             </div>
 
             <button type="submit" id="submitBtn" class="w-full text-white py-6 rounded-2xl text-2xl font-black lovelo shadow-xl btn-submit">
@@ -218,10 +218,38 @@
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz1j9sMEPB6lM2j96yMtbRuMnuupNkBdIOD2D5Y0z8N_E5Oohzu_CF8lOuPYZieuHTN/exec';
         let rawData = [];
 
-        // Form Submission
-        document.getElementById('quizForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
+        // Handle ENTER to navigate or submit
+        const form = document.getElementById('quizForm');
+        const inputs = Array.from(form.querySelectorAll('input:not([type="checkbox"]), select, textarea'));
+
+        inputs.forEach((input, index) => {
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    // Prevent default behavior (newline in textarea)
+                    e.preventDefault();
+
+                    // If it's the last box (complaints), submit the form
+                    if (input.id === 'complaintsBox') {
+                        submitForm();
+                    } else {
+                        // Otherwise, go to next input
+                        const next = inputs[index + 1];
+                        if (next) next.focus();
+                    }
+                }
+            });
+        });
+
+        // Admin Password Enter Key
+        document.getElementById('adminPass').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                fetchData();
+            }
+        });
+
+        // Form Submission logic
+        async function submitForm() {
             const checkedRoles = document.querySelectorAll('input[name="role"]:checked');
             if(checkedRoles.length === 0) {
                 alert("Please select at least one Role.");
@@ -232,7 +260,7 @@
             btn.innerText = "SUBMITTING...";
             btn.disabled = true;
 
-            const formData = new FormData(e.target);
+            const formData = new FormData(form);
             const data = Object.fromEntries(formData.entries());
             
             const roles = [];
@@ -249,7 +277,8 @@
                 const resText = await response.text();
                 if (resText === "Success") {
                     alert("Form submitted successfully! Thank you for your feedback.");
-                    e.target.reset();
+                    form.reset();
+                    inputs[0].focus(); // Reset focus to start
                 } else {
                     throw new Error("Server rejected request");
                 }
@@ -260,6 +289,11 @@
                 btn.innerText = "SUBMIT";
                 btn.disabled = false;
             }
+        }
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            submitForm();
         });
 
         function toggleAdmin() {
@@ -268,6 +302,7 @@
 
         async function fetchData() {
             const pass = document.getElementById('adminPass').value;
+            if (!pass) return;
             const btn = document.querySelector('#loginGroup button');
             btn.innerText = "...";
 
