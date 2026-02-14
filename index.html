@@ -149,6 +149,13 @@
                 </div>
             </div>
 
+            <!-- Reported To (New Option) -->
+            <div>
+                <label class="block text-sm font-black uppercase mb-1">Reported to whom? <span class="text-red-500">*</span></label>
+                <p class="text-xs text-gray-500 font-semibold italic mb-2">Mention the people you worked under during this event</p>
+                <input type="text" name="reportedTo" required placeholder="Names of supervisors/leads" class="w-full input-box p-4 rounded-xl font-semibold">
+            </div>
+
             <!-- Specific Works -->
             <div>
                 <label class="block text-sm font-black uppercase mb-2">Specific Works <span class="text-red-500">*</span></label>
@@ -218,27 +225,27 @@
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz1j9sMEPB6lM2j96yMtbRuMnuupNkBdIOD2D5Y0z8N_E5Oohzu_CF8lOuPYZieuHTN/exec';
         let rawData = [];
 
-        // Handle ENTER to navigate or submit
+        // Updated Handle ENTER to navigate or submit (to include newly added field)
         const form = document.getElementById('quizForm');
-        const inputs = Array.from(form.querySelectorAll('input:not([type="checkbox"]), select, textarea'));
-
-        inputs.forEach((input, index) => {
-            input.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter') {
-                    // Prevent default behavior (newline in textarea)
-                    e.preventDefault();
-
-                    // If it's the last box (complaints), submit the form
-                    if (input.id === 'complaintsBox') {
-                        submitForm();
-                    } else {
-                        // Otherwise, go to next input
-                        const next = inputs[index + 1];
-                        if (next) next.focus();
+        
+        // Function to refresh input list and add listeners
+        function setupNavigation() {
+            const currentInputs = Array.from(form.querySelectorAll('input:not([type="checkbox"]), select, textarea'));
+            currentInputs.forEach((input, index) => {
+                input.onkeydown = (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        if (input.id === 'complaintsBox') {
+                            submitForm();
+                        } else {
+                            const next = currentInputs[index + 1];
+                            if (next) next.focus();
+                        }
                     }
-                }
+                };
             });
-        });
+        }
+        setupNavigation();
 
         // Admin Password Enter Key
         document.getElementById('adminPass').addEventListener('keydown', (e) => {
@@ -278,13 +285,14 @@
                 if (resText === "Success") {
                     alert("Form submitted successfully! Thank you for your feedback.");
                     form.reset();
-                    inputs[0].focus(); // Reset focus to start
+                    const firstInput = form.querySelector('input');
+                    if (firstInput) firstInput.focus();
                 } else {
                     throw new Error("Server rejected request");
                 }
             } catch (err) {
                 console.error(err);
-                alert("Connection Error: Could not save to database. Ensure your Apps Script URL is correct and deployed as 'Anyone'.");
+                alert("Connection Error: Could not save to database. Ensure your Apps Script URL is correct.");
             } finally {
                 btn.innerText = "SUBMIT";
                 btn.disabled = false;
@@ -336,6 +344,8 @@
             }
 
             container.innerHTML = data.map((row, index) => {
+                // Adjustment: Assuming new Google Sheet column order includes "Reported To"
+                // Order expected: Timestamp[0], Name[1], Batch[2], Designation[3], Role[4], ReportedTo[5], Works[6], Experience[7], Suggestions[8], Complaints[9]
                 return `
                 <div class="accordion-item border-2 border-gray-100 rounded-2xl overflow-hidden bg-white shadow-sm transition-all hover:border-[#1f4d79]">
                     <button class="w-full p-5 flex justify-between items-center text-left" onclick="toggleAccordion(this)">
@@ -354,20 +364,24 @@
                                 <p class="font-bold text-[#123144]">${row[4]}</p>
                             </div>
                             <div>
+                                <h4 class="text-xs font-black uppercase text-gray-400 mb-1">Reported To</h4>
+                                <p class="font-bold text-[#1f4d79]">${row[5] || 'N/A'}</p>
+                            </div>
+                            <div class="md:col-span-2">
                                 <h4 class="text-xs font-black uppercase text-gray-400 mb-1">Specific Works</h4>
-                                <p class="text-sm font-medium text-gray-700">${row[5]}</p>
+                                <p class="text-sm font-medium text-gray-700">${row[6]}</p>
                             </div>
                             <div class="md:col-span-2">
                                 <h4 class="text-xs font-black uppercase text-gray-400 mb-1">Detailed Experience</h4>
-                                <p class="text-sm font-medium text-gray-700 whitespace-pre-wrap">${row[6]}</p>
+                                <p class="text-sm font-medium text-gray-700 whitespace-pre-wrap">${row[7]}</p>
                             </div>
                             <div class="md:col-span-2">
                                 <h4 class="text-xs font-black uppercase text-gray-400 mb-1">Suggestions</h4>
-                                <p class="text-sm font-medium text-gray-700 whitespace-pre-wrap">${row[7]}</p>
+                                <p class="text-sm font-medium text-gray-700 whitespace-pre-wrap">${row[8]}</p>
                             </div>
                             <div class="md:col-span-2 bg-red-50 p-4 rounded-xl">
                                 <h4 class="text-xs font-black uppercase text-red-400 mb-1">Anonymous Complaint</h4>
-                                <p class="text-sm font-bold text-red-900 italic">${row[8] || 'No complaints filed.'}</p>
+                                <p class="text-sm font-bold text-red-900 italic">${row[9] || 'No complaints filed.'}</p>
                             </div>
                             <div class="md:col-span-2 text-[10px] text-gray-300 italic">
                                 Timestamp: ${row[0]}
